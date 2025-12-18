@@ -27,7 +27,3 @@ func Power(base, exp int) (int, error) {
 
     return mul, nil
 }
-
-func init() {
-    println("advanced package initialized")
-}
