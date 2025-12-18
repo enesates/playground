@@ -25,5 +25,5 @@ func Division(a, b float64) (float64, error) {
 }
 
 func init() {
-	println("mathlib operations initialized")
+	println("operations package initialized")
 }
