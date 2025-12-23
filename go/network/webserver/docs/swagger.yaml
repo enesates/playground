@@ -1,0 +1,73 @@
+basePath: /
+definitions:
+  helpers.Todo:
+    properties:
+      Completed:
+        type: boolean
+      ID:
+        type: integer
+      Title:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A CRUD Backend API
+  title: CRUD API
+  version: "1.0"
+paths:
+  /todos:
+    get:
+      description: Retrieve all ToDos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of ToDos
+          schema:
+            items:
+              $ref: '#/definitions/helpers.Todo'
+            type: array
+      summary: Get ToDos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: Creating a new ToDo
+      parameters:
+      - description: New ToDo
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/helpers.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the ToDo
+          schema:
+            $ref: '#/definitions/helpers.Todo'
+      summary: Add ToDo
+      tags:
+      - todos
+  /todos/:id:
+    delete:
+      description: Deleting the ToDo
+      parameters:
+      - description: ToDo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the ToDo
+          schema:
+            $ref: '#/definitions/helpers.Todo'
+      summary: Delete ToDo
+      tags:
+      - todos
+swagger: "2.0"

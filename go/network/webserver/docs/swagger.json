@@ -1,0 +1,112 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A CRUD Backend API",
+        "title": "CRUD API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/todos": {
+            "get": {
+                "description": "Retrieve all ToDos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Get ToDos",
+                "responses": {
+                    "200": {
+                        "description": "Details of ToDos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helpers.Todo"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creating a new ToDo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Add ToDo",
+                "parameters": [
+                    {
+                        "description": "New ToDo",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Todo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details of the ToDo",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Todo"
+                        }
+                    }
+                }
+            }
+        },
+        "/todos/:id": {
+            "delete": {
+                "description": "Deleting the ToDo",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Delete ToDo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ToDo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details of the ToDo",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Todo"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "helpers.Todo": {
+            "type": "object",
+            "properties": {
+                "Completed": {
+                    "type": "boolean"
+                },
+                "ID": {
+                    "type": "integer"
+                },
+                "Title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
