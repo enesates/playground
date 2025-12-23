@@ -1,0 +1,8 @@
+2025/12/22 14:34:01 errorhandling.go:19: Divide 10 0
+2025/12/22 14:34:01 errorhandling.go:29: [ERROR]: divide by zero
+2025/12/22 14:34:01 errorhandling.go:19: Divide 10 2
+2025/12/22 14:34:01 errorhandling.go:31: [INFO]: 5
+2025/12/22 14:34:41 errorhandling.go:19: [INFO]: Diving 10 by 0
+2025/12/22 14:34:41 errorhandling.go:29: [ERROR]: divide by zero
+2025/12/22 14:34:41 errorhandling.go:19: [INFO]: Diving 10 by 2
+2025/12/22 14:34:41 errorhandling.go:31: [INFO]: 5

@@ -1,0 +1,31 @@
+{
+  "orderId": "ORD-2025-12-001",
+  "customerId": "CUST-789456",
+  "orderDate": "2025-12-17T09:55:00Z",
+  "status": "pending",
+  "items": [
+    {
+      "productId": "PROD-123",
+      "productName": "Wireless Mouse",
+      "quantity": 2,
+      "unitPrice": 29.99
+    },
+    {
+      "productId": "PROD-456",
+      "productName": "USB-C Cable",
+      "quantity": 3,
+      "unitPrice": 12.50
+    }
+  ],
+  "subtotal": 97.48,
+  "tax": 18.52,
+  "shippingCost": 5.99,
+  "totalAmount": 121.99,
+  "shippingAddress": {
+    "street": "Musterstraße 123",
+    "city": "Frankfurt am Main",
+    "postalCode": "60311",
+    "country": "DE"
+  },
+  "paymentMethod": "credit_card"
+}
