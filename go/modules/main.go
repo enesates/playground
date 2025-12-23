@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/enesates/playground/go/externallibrary/mathlib/advanced"
-	"github.com/enesates/playground/go/externallibrary/mathlib/operations"
-	"github.com/enesates/playground/go/externallibrary/queue"
+	"github.com/enesates/playground/go/lib/mathlib/advanced"
+	"github.com/enesates/playground/go/lib/mathlib/operations"
+	"github.com/enesates/playground/go/lib/queue"
 )
 
 func main() {
