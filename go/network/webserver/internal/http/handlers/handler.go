@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"webserver/helpers"
+	"webserver/internal/helpers"
+	"webserver/internal/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,7 +48,7 @@ func GetTodo(c *gin.Context) {
 // @Success 200 {object} helpers.Todo "Details of the ToDo"
 // @Router /todos [post]
 func AddTodo(c *gin.Context) {
-	var todo helpers.Todo
+	var todo models.Todo
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

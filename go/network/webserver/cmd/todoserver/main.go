@@ -1,8 +1,8 @@
 package main
 
 import (
-	"webserver/docs"
-	"webserver/handlers"
+	"webserver/internal/docs"
+	"webserver/internal/http/handlers"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
