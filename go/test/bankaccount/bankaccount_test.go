@@ -19,6 +19,7 @@ func TestBankAccount_Withdraw(t *testing.T) {
 		ba := BankAccount{100.0}
 		err := ba.Withdraw(200.0)
 
-		assert.ErrorIs(t, err, &InsufficientFunds{})
+		assert.ErrorIs(t, err, ErrInsufficientFunds)
+		//assert.ErrorIs(t, err, &InsufficientFunds{})
 	})
 }

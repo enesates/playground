@@ -1,20 +1,22 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
-type InsufficientFunds struct{}
+//type InsufficientFunds struct{}
+//func (fund *InsufficientFunds) Error() string {
+//	return "InsufficientFunds"
+//}
+//
+//type CustomError struct{}
+//func (fund *CustomError) Error() string {
+//	return "CustomError"
+//}
 
-func (fund *InsufficientFunds) Error() string {
-	return "InsufficientFunds"
-}
-
-type CustomError struct{}
-
-func (fund *CustomError) Error() string {
-	return "CustomError"
-}
+var ErrInsufficientFunds = errors.New("insufficient funds")
+var ErrCustom = errors.New("custom")
 
 type BankAccount struct {
 	balance float64
@@ -22,7 +24,8 @@ type BankAccount struct {
 
 func (ba *BankAccount) Withdraw(amount float64) error {
 	if amount > ba.balance {
-		return &InsufficientFunds{}
+		return ErrInsufficientFunds
+		//return &InsufficientFunds{}
 	}
 
 	ba.balance -= amount
