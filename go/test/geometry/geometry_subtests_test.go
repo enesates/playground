@@ -2,9 +2,11 @@
 
 package main
 
-import "testing"
+import (
+	"testing"
 
-import "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
+)
 
 func TestRectangleArea_Subtests(t *testing.T) {
 	t.Run("Rectangle(3, 5)", func(t *testing.T) {
