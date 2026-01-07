@@ -1,74 +1,28 @@
 package main
 
 import (
-	"context"
 	"log"
-
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"time"
 )
 
-type Customer struct {
-	Name string `bson:"name"`
-	Age  int    `bson:"age"`
-}
-
-func GetCustomer(ctx context.Context, client *mongo.Client) {
-	collection := client.Database("mydb").Collection("customers")
-
-	filter := bson.D{{"name", "Customer"}}
-	var customer Customer
-	err := collection.FindOne(ctx, filter).Decode(&customer)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println(customer)
-}
-
-func AddCustomer(ctx context.Context, client *mongo.Client) {
-	collection := client.Database("mydb").Collection("customers")
-	_, err := collection.InsertOne(ctx, Customer{"Customer", 40})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func UpdateCustomer(ctx context.Context, client *mongo.Client) {
-	collection := client.Database("mydb").Collection("customers")
-	filter := bson.D{{"name", "Customer"}}
-
-	update := bson.D{{"$set", bson.D{{"age", 50}}}}
-	_, err := collection.UpdateOne(ctx, filter, update)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func main() {
-	ctx := context.TODO()
-	client, err := mongo.Connect(options.Client().ApplyURI("mongodb://mongoadmin:mongoadmin@localhost:27017/?authSource=admin"))
+	SetupDB()
+	defer CloseConnection()
 
-	if err != nil {
-		log.Fatal(err)
+	product := Product{
+		ID:        16,
+		Name:      "Harry Potter",
+		Category:  "Book",
+		Price:     22.50,
+		Stock:     20,
+		Tags:      []string{"Children", "Fiction"},
+		CreatedAt: time.Now(),
 	}
 
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
+	productId := AddProduct(product)
 
-			panic(err)
-		}
-	}()
+	log.Println("Added Product")
+	GetProductByID(productId)
 
-	if err = client.Ping(ctx, nil); err != nil {
-
-		log.Fatal(err)
-	}
-
-	AddCustomer(ctx, client)
-	GetCustomer(ctx, client)
-	UpdateCustomer(ctx, client)
-	GetCustomer(ctx, client)
+	GetProductByCategory("Book")
 }
