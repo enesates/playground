@@ -1,27 +1,26 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 )
 
-func CloseConnection(db *sql.DB) {
+func CloseConnection() {
 	defer func() {
-		err := db.Close()
+		err := PostgresDB.Close()
 		if err != nil {
 			log.Fatalf("Error on closing DB connection: %v", err)
 		}
 	}()
 }
 
-func CreateUsers(db *sql.DB) {
+func CreateUsers() {
 	for i := 1; i < 10; i++ {
 		username := fmt.Sprintf("NewUser%d", i)
 		email := fmt.Sprintf("new@user%d.com", i)
 		user := User{name: username, email: email}
 
-		userId, err := AddUser(db, user)
+		userId, err := AddUser(user)
 		if err != nil || userId == -1 {
 			log.Printf("Error while creating user %d\n", userId)
 		}
@@ -29,8 +28,8 @@ func CreateUsers(db *sql.DB) {
 	}
 }
 
-func GetAllUsers(db *sql.DB) {
-	users, err := GetUsers(db)
+func GetAllUsers() {
+	users, err := GetUsers()
 	if err != nil {
 		log.Fatal("Error getting users: ", err)
 	}

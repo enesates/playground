@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-func CreateUsersTable(db *sql.DB) {
-	if _, err := db.Exec(`
+func CreateUsersTable() {
+	if _, err := PostgresDB.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
 			id SERIAL PRIMARY KEY,
 			name TEXT,
@@ -21,10 +21,10 @@ func CreateUsersTable(db *sql.DB) {
 	fmt.Println("Created users table")
 }
 
-func AddUser(db *sql.DB, user User) (int, error) {
+func AddUser(user User) (int, error) {
 	var id int
 
-	err := db.QueryRow(`
+	err := PostgresDB.QueryRow(`
 		INSERT INTO users (name, email, created_at)
 		VALUES ($1, $2, $3)
 		RETURNING id
@@ -37,10 +37,10 @@ func AddUser(db *sql.DB, user User) (int, error) {
 	return id, nil
 }
 
-func GetUsers(db *sql.DB) ([]User, error) {
+func GetUsers() ([]User, error) {
 	var users []User
 
-	rows, err := db.Query(`
+	rows, err := PostgresDB.Query(`
 		SELECT id, name, email, created_at
 		FROM users
 	`)
