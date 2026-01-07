@@ -2,12 +2,9 @@ package main
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
 	ID        int    `gorm:"primaryKey"`
 	Name      string `gorm:"not null"`
 	Email     string `gorm:"unique"`
@@ -17,7 +14,6 @@ type User struct {
 }
 
 type Profile struct {
-	gorm.Model
 	ID     int
 	UserID int
 	Bio    string

@@ -1,29 +1,29 @@
 package main
 
 import (
-    "log"
+	"log"
 
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var GormDB *gorm.DB
 
 func init() {
-    var err error
+	var err error
 
-    dsn := "host=localhost user=postgresuser password=postgrespass dbname=mydb port=5432 sslmode=disable"
-    GormDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dsn := "host=localhost user=postgresuser password=postgrespass dbname=mydb port=5432 sslmode=disable"
+	GormDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-    if err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
-    CreateTables()
+	CreateTables()
 
-    CreateUsers()
+	CreateUsers()
 
-    GetAllUsers()
+	GetAllUsers()
 }
