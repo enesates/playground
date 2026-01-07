@@ -34,4 +34,6 @@ func main() {
 	CreateUsersTable(PostgresDB)
 
 	CreateUsers(PostgresDB)
+
+	GetAllUsers(PostgresDB)
 }
