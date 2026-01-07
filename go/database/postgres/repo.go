@@ -1,12 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 )
 
-func CreateUsersTable() {
-	if _, err := PostgresDB.Exec(`
+func CreateUsersTable(db *sql.DB) {
+	if _, err := db.Exec(`
 		CREATE TABLE users (
 			id SERIAL PRIMARY KEY,
 			name TEXT,

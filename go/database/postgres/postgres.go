@@ -11,8 +11,11 @@ import (
 var PostgresDB *sql.DB
 
 func init() {
+	var err error
+
+	fmt.Println("Connecting to PostgreSQL")
 	var url = "postgres://postgresuser:postgrespass@localhost:5432/mydb?sslmode=disable"
-	PostgresDB, err := sql.Open("postgres", url)
+	PostgresDB, err = sql.Open("postgres", url)
 
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
@@ -26,6 +29,6 @@ func init() {
 }
 
 func main() {
-	defer closeConnection(PostgresDB)
-	CreateUsersTable()
+	defer CloseConnection(PostgresDB)
+	CreateUsersTable(PostgresDB)
 }

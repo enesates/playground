@@ -5,7 +5,7 @@ import (
     "log"
 )
 
-func closeConnection(db *sql.DB) {
+func CloseConnection(db *sql.DB) {
     defer func() {
         err := db.Close()
         if err != nil {
