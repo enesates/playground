@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func main() {
@@ -10,7 +12,7 @@ func main() {
 	defer CloseConnection()
 
 	product := Product{
-		ID:        16,
+		ID:        primitive.NewObjectID(),
 		Name:      "Harry Potter",
 		Category:  "Book",
 		Price:     22.50,

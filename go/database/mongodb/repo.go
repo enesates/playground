@@ -35,4 +35,9 @@ func SetupDB() {
     }
 
     collection = client.Database("mydb").Collection("customers")
+
+    err = collection.Drop(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
 }
