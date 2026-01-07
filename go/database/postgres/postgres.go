@@ -30,5 +30,8 @@ func init() {
 
 func main() {
 	defer CloseConnection(PostgresDB)
+
 	CreateUsersTable(PostgresDB)
+
+	CreateUsers(PostgresDB)
 }
