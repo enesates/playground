@@ -3,47 +3,28 @@ package database
 import (
 	"log"
 
-	"github.com/gofor-little/env"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
-var GormDB *gorm.DB
-
-func CreateTables() {
-	err := GormDB.AutoMigrate(
-		&User{},
-		&Session{},
-		&Order{},
-		&Product{},
-		&Stock{},
-		&OrderItem{},
-		&CartItem{},
-		&Notification{},
-	)
+func CreateUser(username string, email string, password string) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("User couldn't created. Error:", err)
+		return
 	}
+	user := User{
+		Username:     username,
+		Email:        email,
+		PasswordHash: string(hashedPassword),
+	}
+
+	AddUser(user)
 }
 
-func DBInit() {
-	var err error
-
-	if err = env.Load("../../.env"); err != nil {
-		panic(err)
-	}
-
-	dsn, err := env.MustGet("dsn")
-	if err != nil {
-		panic(err)
-	}
-
-	GormDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	CreateTables()
-}
+// if static salt necessary
+// salt, _ := bcrypt.Salt()
+// hash, _ = bcrypt.Hash(password, salt)
+// if bcrypt.Match(password, hash) {
+// 	fmt.Println("They match")
+// }
