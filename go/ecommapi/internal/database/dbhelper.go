@@ -3,28 +3,30 @@ package database
 import (
 	"log"
 
-	"golang.org/x/crypto/bcrypt"
+	"ecommapi/internal/helpers.go"
 )
 
 func CreateUser(username string, email string, password string) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := helpers.HashPassword(password)
 
 	if err != nil {
 		log.Println("User couldn't created. Error:", err)
 		return
 	}
+
 	user := User{
+		ID:           helpers.GetUUID(),
 		Username:     username,
 		Email:        email,
 		PasswordHash: string(hashedPassword),
 	}
 
-	AddUser(user)
-}
+	result := GormDB.Create(&user)
 
-// if static salt necessary
-// salt, _ := bcrypt.Salt()
-// hash, _ = bcrypt.Hash(password, salt)
-// if bcrypt.Match(password, hash) {
-// 	fmt.Println("They match")
-// }
+	if result.Error != nil {
+		log.Printf("Error creating user: %v", result.Error)
+		return
+	}
+
+	log.Printf("User created successfully with ID: %s", user.ID)
+}

@@ -7,5 +7,5 @@ func init() {
 }
 
 func main() {
-
+	database.CreateUser("test4", "test4@test.com", "assadasdsd")
 }
