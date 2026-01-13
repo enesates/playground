@@ -36,3 +36,27 @@ func RegisterUser(c *gin.Context) {
 
 	// c.JSON(200, user)
 }
+
+func LoginUser(c *gin.Context) {
+	var userDTO models.UserDTO
+
+	if err := c.ShouldBindJSON(&userDTO); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	user, err := db.GetUser(userDTO)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		return
+	}
+
+	c.JSON(200, user)
+
+	// session, err := db.CreateSession(user)
+	// if err != nil {
+	// 	c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+	// 	return
+	// }
+
+}
