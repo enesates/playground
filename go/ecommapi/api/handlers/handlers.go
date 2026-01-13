@@ -19,7 +19,7 @@ func RegisterUser(c *gin.Context) {
 	var userDTO models.UserDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
 		return
 	}
 
@@ -34,7 +34,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// c.JSON(200, user)
+	c.JSON(200, user)
 }
 
 func LoginUser(c *gin.Context) {
