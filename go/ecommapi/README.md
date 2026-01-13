@@ -17,9 +17,9 @@
   - Adding the token upon logging in
   - Removing the token upon logging out
   - Middleware to check admin status
+- No JSONB
 - Product Catalogs
   - Pagination (10 products per page)
-- No JSONB
 - Test case for each endpoint with more than 90% code coverage
 - Documentation using Swagger UI (swaggo)
 
@@ -27,7 +27,7 @@
 ## Database Schema
 
 #### Users
-```json
+```
   id: uuid
   username: varchar
   email: varchar
@@ -37,7 +37,7 @@
 
 
 #### Sessions
-```json
+```
   id: uuid
   user_id: uuid
   token: varchar
@@ -45,7 +45,7 @@
 ```
 
 #### Orders
-```json
+```
   id: uuid
   user_id: uuid
   status: varchar
@@ -57,7 +57,7 @@
 ```
 
 #### Products
-```json
+```
   id: uuid
   name: varchar
   description: text
@@ -67,7 +67,7 @@
 ```
 
 #### Stocks
-```json
+```
   product_id: uuid
   quantity: integer
   reserved: bool
@@ -75,7 +75,7 @@
 ```
 
 #### Order_Items
-```json
+```
   order_id: uuid
   product_id: uuid
   quantity: integer
@@ -83,14 +83,14 @@
 ```
 
 #### Cart_Items
-```json
+```
   cart_id: uuid
   product_id: uuid
   quantity: integer
 ```
 
 #### Notifications
-```json
+```
   id: uuid
   user_id: uuid
   title: varchar
@@ -141,7 +141,7 @@
 
 #### POST /auth/logout
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer / Admin)
   ```
 - **Response Example (204 No Content):**
@@ -158,7 +158,7 @@
 
 #### GET /products
 - **Query Parameters:**
-  ```json
+  ```
   category_id: "string"
   page: int
   ```
@@ -179,7 +179,7 @@
 
 #### POST /products
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Admin)
   ```
 - **Request Body:**
@@ -208,7 +208,7 @@
 
 #### GET /inventory/:product_id
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer / Admin)
   ```
 - **Response Example (200 OK):**
@@ -223,7 +223,7 @@
 
 #### PATCH /inventory/:product_id
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Admin)
   ```
 - **Request Body:**
@@ -245,7 +245,7 @@
 
 #### GET /cart
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer)
   ```
 - **Response Example (200 OK):**
@@ -266,7 +266,7 @@
 
 #### POST /cart/items
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer)
   ```
 - **Request Body:**
@@ -293,7 +293,7 @@
 
 #### POST /orders
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer)
   ```
 - **Request Body:**
@@ -334,7 +334,7 @@
 
 #### GET /notifications
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer)
   ```
 - **Response Example (200 OK):**
@@ -354,7 +354,7 @@
 
 #### PATCH /notifications/:id/read
 - **Request:**
-  ```json
+  ```
   X-Session-Token (Customer)
   ```
 - **Response Example (200 OK):**

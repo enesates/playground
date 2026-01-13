@@ -51,7 +51,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"sesion_token": session.Token,
 		"expires_at":   session.ExpiresAt,
 		"user": gin.H{
@@ -82,7 +82,7 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(204, gin.H{
 		"sesion_token": session.Token,
 		"expires_at":   session.ExpiresAt,
 		"user": gin.H{
