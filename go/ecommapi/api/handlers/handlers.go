@@ -16,29 +16,34 @@ func Health(c *gin.Context) {
 }
 
 func RegisterUser(c *gin.Context) {
-	var userDTO models.UserDTO
+	var userDTO models.UserRegisterDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
 		return
 	}
 
-	if db.CheckUserExists(userDTO) {
+	if db.CheckUserExists(userDTO.Username, userDTO.Email) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(errors.New("User already exists")))
 		return
 	}
 
-	err := db.CreateUser(userDTO)
+	user, err := db.CreateUser(userDTO)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
 		return
 	}
 
-	c.JSON(200, user)
+	// Return user data (excluding sensitive fields like PasswordHash)
+	c.JSON(http.StatusCreated, gin.H{
+		"id":       user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+	})
 }
 
 func LoginUser(c *gin.Context) {
-	var userDTO models.UserDTO
+	var userDTO models.UserLoginDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -51,7 +56,14 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, user)
+	c.JSON(200, gin.H{
+		"sesion_token": "string",
+		"expires_at":   "timestamp",
+		"user": gin.H{
+			"username": user.Username,
+			"role":     user.Role,
+		},
+	})
 
 	// session, err := db.CreateSession(user)
 	// if err != nil {

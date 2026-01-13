@@ -8,21 +8,21 @@ import (
 	"ecommapi/internal/models"
 )
 
-func CheckUserExists(userDTO models.UserDTO) bool {
+func CheckUserExists(username string, email string) bool {
 	user := models.User{
-		Username: userDTO.Username,
-		Email:    userDTO.Email,
+		Username: username,
+		Email:    email,
 	}
 
 	result := GormDB.Where("Username = ? OR Email = ?", user.Username, user.Email).First(&user)
 	return result.RowsAffected > 0
 }
 
-func CreateUser(userDTO models.UserDTO) error {
+func CreateUser(userDTO models.UserRegisterDTO) (*models.User, error) {
 	hashedPassword, err := helpers.HashPassword(userDTO.Password)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
-		return errors.New("Internal Server Error")
+		return nil, errors.New("Internal Server Error")
 	}
 
 	user := models.User{
@@ -36,15 +36,16 @@ func CreateUser(userDTO models.UserDTO) error {
 
 	if result.Error != nil {
 		log.Printf("Error creating user: %v", result.Error)
-
-		return errors.New("Internal Server Error")
+		return nil, errors.New("Internal Server Error")
 	}
 
 	log.Printf("User created successfully with ID: %s", user.ID)
-	return nil
+	// The user struct is now populated with all database-generated values
+	// (ID, CreatedAt, UpdatedAt, etc.)
+	return &user, nil
 }
 
-func GetUser(userDTO models.UserDTO) (models.User, error) {
+func GetUser(userDTO models.UserLoginDTO) (models.User, error) {
 	var err error
 
 	user := models.User{
