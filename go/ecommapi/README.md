@@ -216,7 +216,7 @@
   {
     "quantity": integer,
     "stock": integer,
-    "string": storageLocation
+    "storageLocation": "string"
   }
   ```
 
@@ -238,7 +238,7 @@
   {
     "quantity": integer,
     "stock": integer,
-    "string": storageLocation
+    "storageLocation": "string"
   }
   ```
 

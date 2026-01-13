@@ -62,8 +62,8 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	sessionToken := c.GetHeader("X-Session-Token")
-	session, err := dbHelper.GetSessionByToken(sessionToken)
+	token := c.GetHeader("X-Session-Token")
+	session, err := dbHelper.GetSessionByToken(token)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))

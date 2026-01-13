@@ -78,3 +78,21 @@ func GetUserByID(userID string) (models.User, error) {
 
 	return user, nil
 }
+
+func GetUserByToken(token string) (models.User, error) {
+	user := models.User{}
+
+	session, err := GetSessionByToken(token)
+	if err != nil {
+		log.Printf("Error getting session: %v", err)
+		return user, err
+	}
+
+	user, err = GetUserByID(session.UserID)
+	if err != nil {
+		log.Printf("Error getting user: %v", err)
+		return user, err
+	}
+
+	return user, nil
+}

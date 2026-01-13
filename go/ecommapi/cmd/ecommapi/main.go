@@ -24,12 +24,12 @@ func main() {
 
 	router.POST("/auth/register", handlers.Register)
 	router.POST("/auth/login", handlers.Login)
-	router.POST("/auth/logout", middlewares.CheckSessionToken(), handlers.Logout)
+	router.POST("/auth/logout", middlewares.CheckToken(), handlers.Logout)
 
 	router.GET("/products", handlers.GetProducts)
 	router.POST("/products", middlewares.CheckIsAdmin(), handlers.CreateProduct)
 
-	router.GET("/inventory/:product_id", middlewares.CheckSessionToken(), handlers.GetInventory)
+	router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
 	router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
 
 	router.GET("/cart", middlewares.CheckIsCustomer(), handlers.GetCart)
