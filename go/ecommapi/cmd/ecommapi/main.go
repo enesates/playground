@@ -2,6 +2,7 @@ package main
 
 import (
 	"ecommapi/api/handlers"
+	"ecommapi/api/middlewares"
 	"ecommapi/docs"
 	db "ecommapi/internal/database"
 
@@ -20,8 +21,9 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/"
 
 	router.GET("/health", handlers.Health)
-	router.POST("/auth/register", handlers.RegisterUser)
-	router.POST("/auth/login", handlers.LoginUser)
+	router.POST("/auth/register", handlers.Register)
+	router.POST("/auth/login", handlers.Login)
+	router.POST("/auth/logout", middlewares.CheckSessionToken(), handlers.Logout)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
