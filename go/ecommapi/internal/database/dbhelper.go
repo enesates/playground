@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"log"
+	"time"
 
 	"ecommapi/internal/helpers"
 	"ecommapi/internal/models"
@@ -14,8 +15,50 @@ func CheckUserExists(username string, email string) bool {
 		Email:    email,
 	}
 
-	result := GormDB.Where("Username = ? OR Email = ?", user.Username, user.Email).First(&user)
+	result := GormDB.Where("username = ? OR email = ?", user.Username, user.Email).First(&user)
 	return result.RowsAffected > 0
+}
+
+func GetOrCreateSession(userID string) (models.Session, error) {
+	session := models.Session{}
+	GormDB.Where("user_id = ?", userID).First(&session)
+
+	isSessionExpired := session.ID != "" && session.ExpiresAt.Before(time.Now())
+
+	if session.ID == "" || isSessionExpired {
+		if isSessionExpired {
+			result := GormDB.Delete(&session)
+
+			if result.Error != nil {
+				log.Printf("Error deleting session: %v", result.Error)
+				return session, errors.New("Internal Server Error")
+			}
+		}
+
+		expDate := time.Now().Add(time.Hour * 24)
+		token, err := helpers.CreateToken(userID, expDate)
+
+		if err != nil {
+			log.Printf("Error logging user: %v", err)
+			return session, errors.New("Internal Server Error")
+		}
+
+		session = models.Session{
+			ID:        helpers.GetUUID(),
+			UserID:    userID,
+			Token:     token,
+			ExpiresAt: expDate,
+		}
+
+		result := GormDB.Create(&session)
+		if result.Error != nil {
+			log.Printf("Error creating session: %v", result.Error)
+			return session, errors.New("Internal Server Error")
+		}
+	}
+
+	return session, nil
+
 }
 
 func CreateUser(userDTO models.UserRegisterDTO) (*models.User, error) {
@@ -30,6 +73,7 @@ func CreateUser(userDTO models.UserRegisterDTO) (*models.User, error) {
 		Username:     userDTO.Username,
 		Email:        userDTO.Email,
 		PasswordHash: string(hashedPassword),
+		Role:         "customer",
 	}
 
 	result := GormDB.Create(&user)
@@ -40,13 +84,11 @@ func CreateUser(userDTO models.UserRegisterDTO) (*models.User, error) {
 	}
 
 	log.Printf("User created successfully with ID: %s", user.ID)
-	// The user struct is now populated with all database-generated values
-	// (ID, CreatedAt, UpdatedAt, etc.)
 	return &user, nil
 }
 
-func GetUser(userDTO models.UserLoginDTO) (models.User, error) {
-	var err error
+func GetUser(userDTO models.UserLoginDTO) (models.User, models.Session, error) {
+	var session = models.Session{}
 
 	user := models.User{
 		Email: userDTO.Email,
@@ -55,12 +97,14 @@ func GetUser(userDTO models.UserLoginDTO) (models.User, error) {
 	result := GormDB.Where("Email = ?", user.Email).First(&user)
 
 	if result.Error != nil {
-		log.Printf("Error getting user: %v", result.Error)
-		err = errors.New("Internal Server Error")
+		log.Printf("Error logging user: %v", result.Error)
+		return user, session, errors.New("Internal Server Error")
 	} else if !helpers.ComparePassword(user.PasswordHash, userDTO.Password) {
 		log.Printf("Credentials are not correct")
-		err = errors.New("Invalid credentials")
+		return user, session, errors.New("Invalid credentials")
 	}
 
-	return user, err
+	session, err := GetOrCreateSession(user.ID)
+
+	return user, session, err
 }

@@ -50,25 +50,18 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	user, err := db.GetUser(userDTO)
+	user, session, err := db.GetUser(userDTO)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"sesion_token": "string",
-		"expires_at":   "timestamp",
+		"sesion_token": session.Token,
+		"expires_at":   session.ExpiresAt,
 		"user": gin.H{
 			"username": user.Username,
 			"role":     user.Role,
 		},
 	})
-
-	// session, err := db.CreateSession(user)
-	// if err != nil {
-	// 	c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
-	// 	return
-	// }
-
 }
