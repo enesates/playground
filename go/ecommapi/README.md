@@ -107,7 +107,7 @@
   {
     "username": "string",
     "email": "string",
-    "password": "string",
+    "password": "string"
   }
   ```
 - **Response Example (201 Created):**
@@ -124,7 +124,7 @@
   ```json
   {
     "email": "string",
-    "password": "string",
+    "password": "string"
   }
   ```
 - **Response Example (200 OK):**

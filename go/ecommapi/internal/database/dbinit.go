@@ -1,6 +1,7 @@
-package database
+package db
 
 import (
+	"ecommapi/internal/models"
 	"log"
 
 	"github.com/gofor-little/env"
@@ -12,14 +13,14 @@ var GormDB *gorm.DB
 
 func CreateTables() {
 	err := GormDB.AutoMigrate(
-		&User{},
-		&Session{},
-		&Order{},
-		&Product{},
-		&Stock{},
-		&OrderItem{},
-		&CartItem{},
-		&Notification{},
+		&models.User{},
+		&models.Session{},
+		&models.Order{},
+		&models.Product{},
+		&models.Stock{},
+		&models.OrderItem{},
+		&models.CartItem{},
+		&models.Notification{},
 	)
 
 	if err != nil {
