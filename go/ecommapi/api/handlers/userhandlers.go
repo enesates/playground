@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	db "ecommapi/internal/database/helpers"
 	dbHelper "ecommapi/internal/database/helpers"
 	"ecommapi/internal/models"
 	"errors"
@@ -29,7 +28,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Return user data (excluding sensitive fields like PasswordHash)
 	c.JSON(http.StatusCreated, gin.H{
 		"id":       user.ID,
 		"username": user.Username,
@@ -45,7 +43,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user, session, err := db.GetUserAndSession(userDTO)
+	user, session, err := dbHelper.GetUserAndSession(userDTO)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
 		return

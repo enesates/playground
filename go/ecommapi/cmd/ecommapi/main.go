@@ -29,16 +29,16 @@ func main() {
 	router.GET("/products", handlers.GetProducts)
 	router.POST("/products", middlewares.CheckIsAdmin(), handlers.CreateProduct)
 
-	router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
-	router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
+	// router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
+	// router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
 
-	router.GET("/cart", middlewares.CheckIsCustomer(), handlers.GetCart)
-	router.POST("/cart/items", middlewares.CheckIsCustomer(), handlers.AddToCart)
+	// router.GET("/cart", middlewares.CheckIsCustomer(), handlers.GetCart)
+	// router.POST("/cart/items", middlewares.CheckIsCustomer(), handlers.AddToCart)
 
-	router.POST("/orders", middlewares.CheckIsCustomer(), handlers.PlaceOrder)
+	// router.POST("/orders", middlewares.CheckIsCustomer(), handlers.PlaceOrder)
 
-	router.GET("/notifications", middlewares.CheckIsCustomer(), handlers.GetNotifications)
-	router.PATCH("/notifications/:id/read", middlewares.CheckIsCustomer(), handlers.UpdateNotification)
+	// router.GET("/notifications", middlewares.CheckIsCustomer(), handlers.GetNotifications)
+	// router.PATCH("/notifications/:id/read", middlewares.CheckIsCustomer(), handlers.UpdateNotification)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
