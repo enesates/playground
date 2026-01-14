@@ -2,9 +2,12 @@ package main
 
 import (
 	"ecommapi/docs"
-	"ecommapi/internal/api/handlers"
-	"ecommapi/internal/api/middlewares"
-	db "ecommapi/internal/database"
+	"ecommapi/internal/api"
+	"ecommapi/internal/cart"
+	db "ecommapi/internal/helpers/database"
+	"ecommapi/internal/inventory"
+	"ecommapi/internal/product"
+	"ecommapi/internal/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofor-little/env"
@@ -20,25 +23,25 @@ func main() {
 	router := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 
-	router.GET("/health", handlers.Health)
+	router.GET("/health", api.Health)
 
-	router.POST("/auth/register", handlers.Register)
-	router.POST("/auth/login", handlers.Login)
-	router.POST("/auth/logout", middlewares.CheckToken(), handlers.Logout)
+	router.POST("/auth/register", user.Register)
+	router.POST("/auth/login", user.Login)
+	router.POST("/auth/logout", api.CheckToken(), user.Logout)
 
-	router.GET("/products", handlers.GetProducts)
-	router.POST("/products", middlewares.CheckIsAdmin(), handlers.CreateProduct)
+	router.GET("/products", product.GetProducts)
+	router.POST("/products", api.CheckIsAdmin(), product.AddProduct)
 
-	router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
-	router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
+	router.GET("/inventory/:product_id", api.CheckToken(), inventory.GetInventory)
+	router.PATCH("/inventory/:product_id", api.CheckIsAdmin(), inventory.CreateOrUpdateInventory)
 
-	router.GET("/cart", middlewares.CheckIsCustomer(), handlers.GetCart)
-	router.POST("/cart/items", middlewares.CheckIsCustomer(), handlers.AddToCart)
+	router.GET("/cart", api.CheckIsCustomer(), cart.GetCart)
+	router.POST("/cart/items", api.CheckIsCustomer(), cart.AddToCart)
 
-	// router.POST("/orders", middlewares.CheckIsCustomer(), handlers.PlaceOrder)
+	router.POST("/orders", api.CheckIsCustomer(), order.PlaceOrder)
 
-	// router.GET("/notifications", middlewares.CheckIsCustomer(), handlers.GetNotifications)
-	// router.PATCH("/notifications/:id/read", middlewares.CheckIsCustomer(), handlers.UpdateNotification)
+	// router.GET("/notifications", api.CheckIsCustomer(), notification.GetNotifications)
+	// router.PATCH("/notifications/:id/read", api.CheckIsCustomer(), notification.UpdateNotification)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
@@ -46,5 +49,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	router.Run(":" + port)
+
+	if err := router.Run(":" + port); err != nil {
+		panic(err)
+	}
 }

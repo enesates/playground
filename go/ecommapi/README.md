@@ -119,6 +119,13 @@
   unit_price: decimal
 ```
 
+#### Cart
+```
+  user_id: uuid
+  total_amount: float64
+  cart_items: []Cart_Items
+```
+
 #### Cart_Items
 ```
   cart_id: uuid
