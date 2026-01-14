@@ -68,17 +68,21 @@ func CreateSession(userID string) (*models.Session, error) {
 }
 
 func GetOrCreateSession(userID string) (*models.Session, error) {
-	session, err := GetSessionByUserID(userID)
+	session, _ := GetSessionByUserID(userID)
+
+	if session == nil {
+		return CreateSession(userID)
+	}
+
+	isSessionValid := isSessionValid(*session)
 	isSessionExpired := isSessionExpired(*session)
 
-	if err == nil || isSessionExpired {
-		if isSessionExpired {
-			err := DeleteSession(*session)
+	if !isSessionValid || isSessionExpired {
+		err := DeleteSession(*session)
 
-			if err != nil {
-				log.Printf("Error deleting expired session: %v", err)
-				return nil, errors.New("Internal Server Error")
-			}
+		if err != nil {
+			log.Printf("Error deleting expired session: %v", err)
+			return nil, errors.New("Internal Server Error")
 		}
 
 		return CreateSession(userID)

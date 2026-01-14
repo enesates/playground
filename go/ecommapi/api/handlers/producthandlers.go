@@ -29,21 +29,14 @@ func GetProducts(c *gin.Context) {
 		return
 	}
 
-	type Item struct {
-		name     string
-		price    float64
-		category string
-	}
-
-	items := []Item{}
+	items := []gin.H{}
 
 	for _, pr := range products {
-		item := Item{
-			name:     pr.Name,
-			price:    pr.Price,
-			category: pr.CategoryID,
-		}
-		items = append(items, item)
+		items = append(items, gin.H{
+			"name":     pr.Name,
+			"price":    pr.Price,
+			"category": pr.CategoryID,
+		})
 	}
 
 	c.JSON(http.StatusOK, gin.H{

@@ -5,8 +5,8 @@ import (
 )
 
 type CartItem struct {
-	CartID    string `gorm:"type:uuid;primaryKey"`
-	ProductID string `gorm:"type:uuid;primaryKey"`
+	CartID    string `gorm:"type:varchar(255);primaryKey"`
+	ProductID string `gorm:"type:varchar(255);primaryKey"`
 	Quantity  int    `gorm:"type:integer;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

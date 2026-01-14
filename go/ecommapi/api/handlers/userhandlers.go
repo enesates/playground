@@ -80,7 +80,7 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	c.JSON(204, gin.H{
+	c.JSON(http.StatusNoContent, gin.H{
 		"sesion_token": session.Token,
 		"expires_at":   session.ExpiresAt,
 		"user": gin.H{

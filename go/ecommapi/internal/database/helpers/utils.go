@@ -7,7 +7,14 @@ import (
 )
 
 func isSessionExpired(session models.Session) bool {
-	now := time.Now().UTC()
+	if session.ExpiresAt.IsZero() {
+		return false
+	}
 
-	return session.ID == "" || session.Token == "" || session.ExpiresAt.UTC().Before(now)
+	now := time.Now().UTC()
+	return session.ExpiresAt.UTC().Before(now)
+}
+
+func isSessionValid(session models.Session) bool {
+	return session.Token != "" && session.UserID != "" && !session.ExpiresAt.IsZero()
 }

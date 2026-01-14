@@ -7,7 +7,7 @@ import (
 )
 
 type Product struct {
-	ID          string  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	ID          string  `gorm:"type:varchar(255);primaryKey;default:gen_random_uuid()"`
 	Name        string  `gorm:"type:varchar(255);not null"`
 	Description string  `gorm:"type:text"`
 	Price       float64 `gorm:"type:decimal(10,2);not null"`
