@@ -1,6 +1,113 @@
+definitions:
+  models.ProductDTO:
+    properties:
+      category_id:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    required:
+    - category_id
+    - name
+    - price
+    type: object
+  models.UserLoginDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.UserRegisterDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
 info:
   contact: {}
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login as Customer or Admin
+      parameters:
+      - description: Login credentials
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the User
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login
+      tags:
+      - user
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logging out as a User
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the User
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Logout
+      tags:
+      - user
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Creating a new Customer
+      parameters:
+      - description: New User
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the User
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a User
+      tags:
+      - user
   /health:
     get:
       description: Check if service runs properly
@@ -15,4 +122,51 @@ paths:
       summary: Health Check
       tags:
       - health
+  /products:
+    get:
+      description: Get products for a given category starting from a page
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product Items
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get products for category
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: Create a product for the given category
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: New Product
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product details
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a product
+      tags:
+      - product
 swagger: "2.0"

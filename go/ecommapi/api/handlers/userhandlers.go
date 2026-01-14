@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Register godoc
+// @Summary Create a User
+// @Description Creating a new Customer
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param data body models.UserRegisterDTO true "New User"
+// @Success 200 {object} map[string]any "Details of the User"
+// @Router /auth/register [post]
 func Register(c *gin.Context) {
 	var userDTO models.UserRegisterDTO
 
@@ -35,6 +44,15 @@ func Register(c *gin.Context) {
 	})
 }
 
+// Login godoc
+// @Summary Login
+// @Description Login as Customer or Admin
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param data body models.UserLoginDTO true "Login credentials"
+// @Success 200 {object} map[string]any "Details of the User"
+// @Router /auth/login [post]
 func Login(c *gin.Context) {
 	var userDTO models.UserLoginDTO
 
@@ -59,6 +77,15 @@ func Login(c *gin.Context) {
 	})
 }
 
+// Logout godoc
+// @Summary Logout
+// @Description Logging out as a User
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param X-Session-Token header string true "Session token"
+// @Success 200 {object} map[string]any "Details of the User"
+// @Router /auth/logout [post]
 func Logout(c *gin.Context) {
 	token := c.GetHeader("X-Session-Token")
 	session, err := dbHelper.GetSessionByToken(token)
