@@ -14,7 +14,3 @@ type CartItem struct {
 
 	Product Product `gorm:"foreignKey:ProductID;constraint:OnDelete:CASCADE"`
 }
-
-func (CartItem) TableName() string {
-	return "cart_items"
-}

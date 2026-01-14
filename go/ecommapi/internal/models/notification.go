@@ -18,7 +18,3 @@ type Notification struct {
 
 	User User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
-
-func (Notification) TableName() string {
-	return "notifications"
-}

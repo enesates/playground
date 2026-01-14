@@ -2,7 +2,7 @@ package handlers
 
 import (
 	dbHelper "ecommapi/internal/database/helpers"
-	"ecommapi/internal/models"
+	"ecommapi/internal/dtos"
 
 	"errors"
 	"net/http"
@@ -25,13 +25,13 @@ func GetProducts(c *gin.Context) {
 		page = 1
 	}
 
-	categoryId := c.Query("category_id")
-	if categoryId == "" {
+	cid := c.Query("category_id")
+	if cid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(errors.New("Missing category id")))
 		return
 	}
 
-	products, err := dbHelper.GetProducts(categoryId, page)
+	products, err := dbHelper.GetProducts(cid, page)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
 		return
@@ -60,11 +60,11 @@ func GetProducts(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param X-Session-Token header string true "Session token"
-// @Param data body models.ProductDTO true "New Product"
+// @Param data body dtos.ProductDTO true "New Product"
 // @Success 200 {object} map[string]any "Product details"
 // @Router /products [post]
 func CreateProduct(c *gin.Context) {
-	var productDTO models.ProductDTO
+	var productDTO dtos.ProductDTO
 
 	if err := c.ShouldBindJSON(&productDTO); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))

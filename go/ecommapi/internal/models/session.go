@@ -14,7 +14,3 @@ type Session struct {
 
 	User User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
-
-func (Session) TableName() string {
-	return "sessions"
-}

@@ -22,7 +22,3 @@ type Order struct {
 	User       User        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	OrderItems []OrderItem `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE"`
 }
-
-func (Order) TableName() string {
-	return "orders"
-}

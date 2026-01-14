@@ -106,7 +106,7 @@
 ```
   product_id: uuid
   quantity: integer
-  reserved: bool
+  reserved: integer
   location: varchar
 ```
 

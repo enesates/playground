@@ -15,10 +15,5 @@ func CreateToken(userID string, expDate time.Time) (string, error) {
 			"exp":      expDate,
 		})
 
-	tokenString, err := token.SignedString(secretKey)
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
+	return token.SignedString(secretKey)
 }

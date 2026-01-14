@@ -16,7 +16,3 @@ type OrderItem struct {
 	Order   Order   `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE"`
 	Product Product `gorm:"foreignKey:ProductID;constraint:OnDelete:RESTRICT"`
 }
-
-func (OrderItem) TableName() string {
-	return "order_items"
-}

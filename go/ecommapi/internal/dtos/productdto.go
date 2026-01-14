@@ -1,4 +1,4 @@
-package models
+package dtos
 
 type ProductDTO struct {
 	Name        string  `json:"name" binding:"required"`

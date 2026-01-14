@@ -1,4 +1,4 @@
-package models
+package dtos
 
 type UserRegisterDTO struct {
 	Username string `json:"username" binding:"required"`

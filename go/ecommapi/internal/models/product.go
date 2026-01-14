@@ -20,7 +20,3 @@ type Product struct {
 	OrderItems []OrderItem `gorm:"foreignKey:ProductID"`
 	CartItems  []CartItem  `gorm:"foreignKey:ProductID"`
 }
-
-func (Product) TableName() string {
-	return "products"
-}

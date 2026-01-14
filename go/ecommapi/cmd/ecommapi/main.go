@@ -29,8 +29,8 @@ func main() {
 	router.GET("/products", handlers.GetProducts)
 	router.POST("/products", middlewares.CheckIsAdmin(), handlers.CreateProduct)
 
-	// router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
-	// router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
+	router.GET("/inventory/:product_id", middlewares.CheckToken(), handlers.GetInventory)
+	router.PATCH("/inventory/:product_id", middlewares.CheckIsAdmin(), handlers.UpdateInventory)
 
 	// router.GET("/cart", middlewares.CheckIsCustomer(), handlers.GetCart)
 	// router.POST("/cart/items", middlewares.CheckIsCustomer(), handlers.AddToCart)

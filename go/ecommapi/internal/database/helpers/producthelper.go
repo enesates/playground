@@ -2,27 +2,27 @@ package db
 
 import (
 	db "ecommapi/internal/database"
+	"ecommapi/internal/dtos"
 	"ecommapi/internal/helpers"
 	"ecommapi/internal/models"
 
-	"errors"
 	"log"
 )
 
-func GetProducts(categoryId string, page int) ([]models.Product, error) {
+func GetProducts(cid string, page int) ([]models.Product, error) {
 	products := []models.Product{}
-	productsResult := db.GormDB.Limit(10).Offset((page-1)*10).Where("category_id = ?", categoryId).Find(&products)
 
-	if productsResult.Error != nil {
-		log.Printf("Error getting products: %v", productsResult.Error)
-		return nil, errors.New("Internal Server Error")
+	if err := db.GormDB.
+		Limit(10).Offset((page-1)*10).
+		Where("category_id = ?", cid).
+		Find(&products).Error; err != nil {
+		return nil, err
 	}
 
 	return products, nil
-
 }
 
-func CreateProduct(productDTO models.ProductDTO) (*models.Product, error) {
+func CreateProduct(productDTO dtos.ProductDTO) (*models.Product, error) {
 	product := models.Product{
 		ID:          helpers.GetUUID(),
 		Name:        productDTO.Name,
@@ -32,11 +32,8 @@ func CreateProduct(productDTO models.ProductDTO) (*models.Product, error) {
 		IsActive:    true,
 	}
 
-	productResult := db.GormDB.Create(&product)
-
-	if productResult.Error != nil {
-		log.Printf("Error creating product: %v", productResult.Error)
-		return nil, errors.New("Internal Server Error")
+	if err := db.GormDB.Create(&product).Error; err != nil {
+		return nil, err
 	}
 
 	log.Printf("Product created successfully with ID: %s", product.ID)

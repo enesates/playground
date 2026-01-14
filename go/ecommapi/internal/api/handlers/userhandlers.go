@@ -2,7 +2,7 @@ package handlers
 
 import (
 	dbHelper "ecommapi/internal/database/helpers"
-	"ecommapi/internal/models"
+	"ecommapi/internal/dtos"
 	"errors"
 	"net/http"
 
@@ -15,11 +15,11 @@ import (
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param data body models.UserRegisterDTO true "New User"
+// @Param data body dtos.UserRegisterDTO true "New User"
 // @Success 200 {object} map[string]any "Details of the User"
 // @Router /auth/register [post]
 func Register(c *gin.Context) {
-	var userDTO models.UserRegisterDTO
+	var userDTO dtos.UserRegisterDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
@@ -50,11 +50,11 @@ func Register(c *gin.Context) {
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param data body models.UserLoginDTO true "Login credentials"
+// @Param data body dtos.UserLoginDTO true "Login credentials"
 // @Success 200 {object} map[string]any "Details of the User"
 // @Router /auth/login [post]
 func Login(c *gin.Context) {
-	var userDTO models.UserLoginDTO
+	var userDTO dtos.UserLoginDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)

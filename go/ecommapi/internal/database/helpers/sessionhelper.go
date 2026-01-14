@@ -1,8 +1,6 @@
 package db
 
 import (
-	"errors"
-	"log"
 	"time"
 
 	db "ecommapi/internal/database"
@@ -15,11 +13,8 @@ func GetSessionByToken(token string) (*models.Session, error) {
 		Token: token,
 	}
 
-	sessionResult := db.GormDB.Where("token = ?", token).First(&session)
-
-	if sessionResult.Error != nil {
-		log.Printf("Error getting session: %v", sessionResult.Error)
-		return nil, errors.New("Internal Server Error")
+	if err := db.GormDB.Where("token = ?", token).First(&session).Error; err != nil {
+		return nil, err
 	}
 
 	return &session, nil
@@ -27,10 +22,9 @@ func GetSessionByToken(token string) (*models.Session, error) {
 
 func GetSessionByUserID(userID string) (*models.Session, error) {
 	session := models.Session{}
-	sessionResult := db.GormDB.Where("user_id = ?", userID).First(&session)
 
-	if sessionResult.Error != nil || session.ID == "" {
-		return nil, errors.New("No session found")
+	if err := db.GormDB.Where("user_id = ?", userID).First(&session).Error; err != nil {
+		return nil, err
 	}
 
 	return &session, nil
@@ -47,8 +41,7 @@ func CreateSession(userID string) (*models.Session, error) {
 	token, err := helpers.CreateToken(userID, expDate)
 
 	if err != nil {
-		log.Printf("Error creating token: %v", err)
-		return nil, errors.New("Internal Server Error")
+		return nil, err
 	}
 
 	session := models.Session{
@@ -58,10 +51,8 @@ func CreateSession(userID string) (*models.Session, error) {
 		ExpiresAt: expDate,
 	}
 
-	createSessionResult := db.GormDB.Create(&session)
-	if createSessionResult.Error != nil {
-		log.Printf("Error creating session: %v", createSessionResult.Error)
-		return nil, errors.New("Internal Server Error")
+	if err := db.GormDB.Create(&session).Error; err != nil {
+		return nil, err
 	}
 
 	return &session, nil
@@ -78,11 +69,8 @@ func GetOrCreateSession(userID string) (*models.Session, error) {
 	isSessionExpired := isSessionExpired(*session)
 
 	if !isSessionValid || isSessionExpired {
-		err := DeleteSession(*session)
-
-		if err != nil {
-			log.Printf("Error deleting expired session: %v", err)
-			return nil, errors.New("Internal Server Error")
+		if err := DeleteSession(*session); err != nil {
+			return nil, err
 		}
 
 		return CreateSession(userID)
