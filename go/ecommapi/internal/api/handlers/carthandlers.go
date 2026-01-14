@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"ecommapi/internal/api/helpers"
+	h "ecommapi/internal/api/helpers"
 	dbHelper "ecommapi/internal/database/helpers"
 	"ecommapi/internal/dtos"
 
@@ -21,33 +23,20 @@ func GetCart(c *gin.Context) {
 	token := c.GetHeader("X-Session-Token")
 	user, err := dbHelper.GetUserByToken(token)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	cart, err := dbHelper.GetCart(user.ID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		h.AbortJSON(c, http.StatusNotFound, err.Error())
 		return
 	}
 
-	items := []gin.H{}
-	totalAmount := 0.0
-
-	for _, ci := range cart.CartItems {
-		product, err := dbHelper.GetProductByID(ci.ProductID)
-
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		totalAmount += product.Price
-
-		items = append(items, gin.H{
-			"product_id": ci.ProductID,
-			"quantity":   ci.Quantity,
-		})
+	items, totalAmount, err := helpers.GenerateProductLineItems(cart, nil)
+	if err != nil {
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -70,56 +59,33 @@ func AddToCart(c *gin.Context) {
 	var cartItemDTO dtos.CartItemDTO
 
 	if err := c.ShouldBindJSON(&cartItemDTO); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.AbortJSON(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token := c.GetHeader("X-Session-Token")
 	user, err := dbHelper.GetUserByToken(token)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	cart, err := dbHelper.GetCart(user.ID)
+	cart, err := helpers.GetOrCreateCart(user.ID)
 	if err != nil {
-		cart, err = dbHelper.CreateCart(user.ID)
-
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	cartItem, err := dbHelper.CreateOrUpdateCartItem(cart.ID, cartItemDTO.ProductID, cartItemDTO.Quantity)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	items := []gin.H{
-		{
-			"product_id": cartItem.ProductID,
-			"quantity":   cartItem.Quantity,
-		},
-	}
-
-	totalAmount := 0.0
-
-	for _, ci := range cart.CartItems {
-		product, err := dbHelper.GetProductByID(ci.ProductID)
-
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		totalAmount += product.Price
-
-		items = append(items, gin.H{
-			"product_id": ci.ProductID,
-			"quantity":   ci.Quantity,
-		})
+	items, totalAmount, err := helpers.GenerateProductLineItems(cart, cartItem)
+	if err != nil {
+		h.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{

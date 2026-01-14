@@ -3,6 +3,7 @@ package middlewares
 import (
 	"net/http"
 
+	h "ecommapi/internal/api/helpers"
 	dbHelper "ecommapi/internal/database/helpers"
 
 	"github.com/gin-gonic/gin"
@@ -15,11 +16,7 @@ func isTokenValid(token string) bool {
 
 	_, err := dbHelper.GetSessionByToken(token)
 
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func CheckToken() gin.HandlerFunc {
@@ -27,7 +24,7 @@ func CheckToken() gin.HandlerFunc {
 		token := c.GetHeader("X-Session-Token")
 
 		if !isTokenValid(token) {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			h.AbortJSON(c, http.StatusUnauthorized, "Invalid token")
 			return
 		}
 
@@ -53,7 +50,7 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 	token := c.GetHeader("X-Session-Token")
 
 	if !isTokenValid(token) {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		h.AbortJSON(c, http.StatusUnauthorized, "Invalid token")
 		c.Abort()
 		return
 	}
@@ -61,7 +58,7 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 	user, err := dbHelper.GetUserByToken(token)
 
 	if err != nil || user.Role != role {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Authorization failed"})
+		h.AbortJSON(c, http.StatusForbidden, "Authorization failed")
 		c.Abort()
 		return
 	}
