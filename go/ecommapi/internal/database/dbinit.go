@@ -31,7 +31,7 @@ func CreateTables() {
 func DBInit() {
 	var err error
 
-	if err = env.Load("../../.env"); err != nil {
+	if err = env.Load(".env"); err != nil {
 		panic(err)
 	}
 

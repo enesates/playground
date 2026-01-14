@@ -1,4 +1,18 @@
 info:
   contact: {}
-paths: {}
+paths:
+  /health:
+    get:
+      description: Check if service runs properly
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Health message
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health Check
+      tags:
+      - health
 swagger: "2.0"

@@ -6,6 +6,41 @@
 - PostgreSQL
 - GORM
 
+## Installation
+
+1. Clone the repository:
+  ```sh
+  git clone <repository-url>
+  ```
+2. Create a `.env` file, set the database connection and update the port and postgres credentials with the actual values:
+  ```sh
+  PORT=8081
+  dsn="host=localhost user=postgresuser password=postgrespass dbname=mydb port=5432 sslmode=disable"
+  ```
+
+4. Setup the database:
+  ```sh
+  docker compose up
+  ```
+
+6. Then start the API:
+  ```sh
+  go run ./cmd/ecommapi
+  ```
+
+7. (Optional) Run the tests in `tests` folder:
+  ```sh
+  go test . -v
+  ```
+
+8. (Optional) Generate updated docs:
+  ```sh
+  swag init
+  OR
+  swag init -g cmd/ecommapi/main.go -o docs
+  ```
+
+
 ## Functionalities
 - Authentication: Stateful Sessions (token-based with database validation)
 - Header check: HTTP header X-Session-Token for non-public requests
