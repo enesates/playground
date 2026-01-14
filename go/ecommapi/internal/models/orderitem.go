@@ -5,8 +5,9 @@ import (
 )
 
 type OrderItem struct {
-	OrderID   string  `gorm:"type:varchar(255);primaryKey"`
-	ProductID string  `gorm:"type:varchar(255);primaryKey"`
+	ID        string  `gorm:"type:varchar(255);primaryKey"`
+	OrderID   string  `gorm:"type:varchar(255);not null;index"`
+	ProductID string  `gorm:"type:varchar(255);not null;index"`
 	Quantity  int     `gorm:"type:integer;not null"`
 	UnitPrice float64 `gorm:"type:decimal(10,2);not null;column:unit_price"`
 	CreatedAt time.Time

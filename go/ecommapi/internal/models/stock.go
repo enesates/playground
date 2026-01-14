@@ -5,7 +5,8 @@ import (
 )
 
 type Stock struct {
-	ProductID string `gorm:"type:varchar(255);primaryKey"`
+	ID        string `gorm:"type:varchar(255);primaryKey"`
+	ProductID string `gorm:"type:varchar(255);not null;uniqueIndex"`
 	Quantity  int    `gorm:"type:integer;not null"`
 	Reserved  bool   `gorm:"type:boolean;not null;default:false"`
 	Location  string `gorm:"type:varchar(255);not null"`

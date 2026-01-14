@@ -408,3 +408,16 @@
 - 403 Forbidden
 - 404 Not Found
 - 500 Internal Server Error
+
+
+## Helper Commands
+
+- Backup DB Table data
+```
+docker exec -t ecommapi-db-1 psql -U postgresuser -d mydb -c "\copy products TO STDOUT WITH CSV HEADER" > db.csv
+```
+
+- Import DB Table data
+```
+docker exec -i ecommapi-db-1 psql -U postgresuser -d mydb -c "\copy products FROM STDIN WITH CSV HEADER" < db.csv
+```
