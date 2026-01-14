@@ -15,7 +15,7 @@ func GetProducts(categoryId string, page int) ([]models.Product, error) {
 
 	if productsResult.Error != nil {
 		log.Printf("Error getting products: %v", productsResult.Error)
-		return products, errors.New("Internal Server Error")
+		return nil, errors.New("Internal Server Error")
 	}
 
 	return products, nil
@@ -41,21 +41,4 @@ func CreateProduct(productDTO models.ProductDTO) (*models.Product, error) {
 
 	log.Printf("Product created successfully with ID: %s", product.ID)
 	return &product, nil
-
 }
-
-//   ```json
-//   ```
-// - **Response Example (201 Created):**
-//   ```json
-//   {
-//     "items": [
-//       {
-//         "name": "string",
-//         "price": decimal,
-//         "category": "string"
-//       },
-//       ...
-//     ],
-//     "total_count": decimal
-//   }

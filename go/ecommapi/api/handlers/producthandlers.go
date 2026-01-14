@@ -2,6 +2,8 @@ package handlers
 
 import (
 	dbHelper "ecommapi/internal/database/helpers"
+	"ecommapi/internal/models"
+
 	"errors"
 	"net/http"
 	"strconv"
@@ -27,16 +29,49 @@ func GetProducts(c *gin.Context) {
 		return
 	}
 
+	type Item struct {
+		name     string
+		price    float64
+		category string
+	}
+
+	items := []Item{}
+
+	for _, pr := range products {
+		item := Item{
+			name:     pr.Name,
+			price:    pr.Price,
+			category: pr.CategoryID,
+		}
+		items = append(items, item)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		// "items": [
-		//   gin.H{
-		//     "name": "string",
-		//     "price": decimal,
-		//     "category": "string",
-		//   },
-		//   ///...
-		// ],
-		"a":           products[0],
-		"total_count": "decimal",
+		"items":       items,
+		"total_count": len(items),
+	})
+}
+
+func CreateProduct(c *gin.Context) {
+	var productDTO models.ProductDTO
+
+	if err := c.ShouldBindJSON(&productDTO); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
+		return
+	}
+
+	product, err := dbHelper.CreateProduct(productDTO)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"id":          product.ID,
+		"name":        product.Name,
+		"price":       product.Price,
+		"description": product.Description,
+		"category_id": product.CategoryID,
+		"is_active":   product.IsActive,
 	})
 }

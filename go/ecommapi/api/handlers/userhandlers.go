@@ -74,7 +74,7 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	err = dbHelper.DeleteSession(session)
+	err = dbHelper.DeleteSession(*session)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
 		return

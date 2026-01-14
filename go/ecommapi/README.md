@@ -194,15 +194,12 @@
 - **Response Example (201 Created):**
   ```json
   {
-    "items": [
-      {
-        "name": "string",
-        "price": decimal,
-        "category": "string"
-      },
-      ...
-    ],
-    "total_count": decimal
+    "id": "uuid",
+    "name": "string",
+    "price": decimal,
+    "description": "string",
+    "category_id": "string",
+    "is_active": bool
   }
   ```
 

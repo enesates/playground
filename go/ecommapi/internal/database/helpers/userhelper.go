@@ -45,9 +45,7 @@ func CreateUser(userDTO models.UserRegisterDTO) (*models.User, error) {
 	return &user, nil
 }
 
-func GetUserAndSession(userDTO models.UserLoginDTO) (models.User, models.Session, error) {
-	var session = models.Session{}
-
+func GetUserAndSession(userDTO models.UserLoginDTO) (*models.User, *models.Session, error) {
 	user := models.User{
 		Email: userDTO.Email,
 	}
@@ -56,42 +54,40 @@ func GetUserAndSession(userDTO models.UserLoginDTO) (models.User, models.Session
 
 	if userResult.Error != nil {
 		log.Printf("Error logging user: %v", userResult.Error)
-		return user, session, errors.New("Internal Server Error")
+		return nil, nil, errors.New("Internal Server Error")
 	} else if !helpers.ComparePassword(user.PasswordHash, userDTO.Password) {
 		log.Printf("Credentials are not correct")
-		return user, session, errors.New("Invalid credentials")
+		return nil, nil, errors.New("Invalid credentials")
 	}
 
 	session, err := GetOrCreateSession(user.ID)
 
-	return user, session, err
+	return &user, session, err
 }
 
-func GetUserByID(userID string) (models.User, error) {
+func GetUserByID(userID string) (*models.User, error) {
 	user := models.User{}
 	userResult := db.GormDB.Where("id = ?", userID).First(&user)
 
 	if userResult.Error != nil {
 		log.Printf("Error getting user: %v", userResult.Error)
-		return user, errors.New("Internal Server Error")
+		return nil, errors.New("Internal Server Error")
 	}
 
-	return user, nil
+	return &user, nil
 }
 
-func GetUserByToken(token string) (models.User, error) {
-	user := models.User{}
-
+func GetUserByToken(token string) (*models.User, error) {
 	session, err := GetSessionByToken(token)
 	if err != nil {
 		log.Printf("Error getting session: %v", err)
-		return user, err
+		return nil, err
 	}
 
-	user, err = GetUserByID(session.UserID)
+	user, err := GetUserByID(session.UserID)
 	if err != nil {
 		log.Printf("Error getting user: %v", err)
-		return user, err
+		return nil, err
 	}
 
 	return user, nil
