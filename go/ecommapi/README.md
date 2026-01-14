@@ -5,6 +5,7 @@
 - Go
 - PostgreSQL
 - GORM
+- Gin Web Framework
 
 ## Installation
 

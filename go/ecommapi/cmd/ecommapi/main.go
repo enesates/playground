@@ -1,9 +1,9 @@
 package main
 
 import (
-	"ecommapi/api/handlers"
-	"ecommapi/api/middlewares"
 	"ecommapi/docs"
+	"ecommapi/internal/api/handlers"
+	"ecommapi/internal/api/middlewares"
 	db "ecommapi/internal/database"
 
 	"github.com/gin-gonic/gin"
