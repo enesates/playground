@@ -22,18 +22,18 @@ func Register(c *gin.Context) {
 	var userDTO dtos.UserRegisterDTO
 
 	if err := c.ShouldBindJSON(&userDTO); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if dbHelper.CheckUserExists(userDTO.Username, userDTO.Email) {
-		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(errors.New("User already exists")))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "User already exists"}))
 		return
 	}
 
 	user, err := dbHelper.CreateUser(userDTO)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -63,7 +63,7 @@ func Login(c *gin.Context) {
 
 	user, session, err := dbHelper.GetUserAndSession(userDTO)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -91,19 +91,19 @@ func Logout(c *gin.Context) {
 	session, err := dbHelper.GetSessionByToken(token)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	user, err := dbHelper.GetUserByID(session.UserID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = dbHelper.DeleteSession(*session)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

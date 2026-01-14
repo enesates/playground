@@ -4,7 +4,6 @@ import (
 	dbHelper "ecommapi/internal/database/helpers"
 	"ecommapi/internal/dtos"
 
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -27,13 +26,13 @@ func GetProducts(c *gin.Context) {
 
 	cid := c.Query("category_id")
 	if cid == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(errors.New("Missing category id")))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Missing category id"})
 		return
 	}
 
 	products, err := dbHelper.GetProducts(cid, page)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -67,13 +66,13 @@ func CreateProduct(c *gin.Context) {
 	var productDTO dtos.ProductDTO
 
 	if err := c.ShouldBindJSON(&productDTO); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	product, err := dbHelper.CreateProduct(productDTO)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

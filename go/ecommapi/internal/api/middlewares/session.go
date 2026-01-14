@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"errors"
 	"net/http"
 
 	dbHelper "ecommapi/internal/database/helpers"
@@ -28,8 +27,7 @@ func CheckToken() gin.HandlerFunc {
 		token := c.GetHeader("X-Session-Token")
 
 		if !isTokenValid(token) {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, c.Error(errors.New("Invalid Token")))
-			c.Abort()
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			return
 		}
 
@@ -55,7 +53,7 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 	token := c.GetHeader("X-Session-Token")
 
 	if !isTokenValid(token) {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, c.Error(errors.New("Invalid Token")))
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		c.Abort()
 		return
 	}
@@ -63,7 +61,7 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 	user, err := dbHelper.GetUserByToken(token)
 
 	if err != nil || user.Role != role {
-		c.AbortWithStatusJSON(http.StatusForbidden, c.Error(errors.New("Authorization failed")))
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Authorization failed"})
 		c.Abort()
 		return
 	}

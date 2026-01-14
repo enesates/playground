@@ -3,7 +3,6 @@ package handlers
 import (
 	dbHelper "ecommapi/internal/database/helpers"
 	"ecommapi/internal/dtos"
-	"errors"
 
 	"net/http"
 
@@ -23,7 +22,7 @@ func GetInventory(c *gin.Context) {
 
 	inventory, err := dbHelper.GetInventory(pid)
 	if inventory == nil || err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -50,12 +49,12 @@ func UpdateInventory(c *gin.Context) {
 	pid := c.Param("product_id")
 
 	if err := c.ShouldBindJSON(&stockDTO); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if stockDTO.IncerementBy < 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, errors.New("Invalid quantity"))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid quantity"})
 		return
 	}
 
@@ -67,7 +66,7 @@ func UpdateInventory(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, c.Error(err))
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

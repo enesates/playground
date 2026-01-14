@@ -53,6 +53,7 @@
   - Adding the token upon logging in
   - Removing the token upon logging out
   - Middleware to check admin status
+- A notification is created for: Register, Login, Logout, Create product, Update stock and Shopping cart update.
 - No JSONB
 - Product Catalogs
   - Pagination (10 products per page)
@@ -284,18 +285,16 @@
 - **Response Example (200 OK):**
   ```json
   {
-    "cart_items": [
+    "items": [
       {
-        "name": "string",
-        "price": decimal,
-        "category": "string"
+        "product_id": uuid,
+        "quantity": integer
       },
       ...
     ],
     "total_amount": decimal
   }
   ```
-
 
 #### POST /cart/items
 - **Request:**
@@ -314,9 +313,8 @@
   {
     "items": [
       {
-        "name": "string",
-        "price": decimal,
-        "category": "string"
+        "product_id": uuid,
+        "quantity": integer
       },
       ...
     ],
@@ -350,9 +348,8 @@
   {
     "items": [
       {
-        "name": "string",
-        "price": decimal,
-        "category": "string"
+        "product_id": uuid,
+        "quantity": integer
       },
       ...
     ],

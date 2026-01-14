@@ -5,9 +5,17 @@ import (
 	"ecommapi/internal/dtos"
 	"ecommapi/internal/helpers"
 	"ecommapi/internal/models"
-
-	"log"
 )
+
+func GetProductByID(pid string) (*models.Product, error) {
+	product := models.Product{}
+
+	if err := db.GormDB.Where("id = ?", pid).First(&product).Error; err != nil {
+		return nil, err
+	}
+
+	return &product, nil
+}
 
 func GetProducts(cid string, page int) ([]models.Product, error) {
 	products := []models.Product{}
@@ -36,6 +44,5 @@ func CreateProduct(productDTO dtos.ProductDTO) (*models.Product, error) {
 		return nil, err
 	}
 
-	log.Printf("Product created successfully with ID: %s", product.ID)
 	return &product, nil
 }
