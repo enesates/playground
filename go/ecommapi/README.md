@@ -19,22 +19,22 @@
   dsn="host=localhost user=postgresuser password=postgrespass dbname=mydb port=5432 sslmode=disable"
   ```
 
-4. Setup the database:
+3. Setup the database:
   ```sh
   docker compose up
   ```
 
-6. Then start the API:
+4. Then start the API:
   ```sh
   go run ./cmd/ecommapi
   ```
 
-7. (Optional) Run the tests in `tests` folder:
+5. (Optional) Run the tests in `tests` folder:
   ```sh
   go test . -v
   ```
 
-8. (Optional) Generate updated docs:
+6. (Optional) Generate updated docs:
   ```sh
   swag init
   OR
@@ -55,8 +55,7 @@
   - Middleware to check admin status
 - Notifications are created for: Register, Login, Logout, Create product, Update stock and Shopping cart update.
 - No JSONB
-- Product Catalogs
-  - Pagination (10 products per page)
+- Product Catalogs: Pagination (10 products per page)
 - Test case for each endpoint with more than 90% code coverage
 - Documentation using Swagger UI (swaggo)
 
@@ -72,25 +71,12 @@
   role: varchar
 ```
 
-
 #### Sessions
 ```
   id: uuid
   user_id: uuid
   token: varchar
   expires_at: timestamp
-```
-
-#### Orders
-```
-  id: uuid
-  user_id: uuid
-  status: varchar
-  total_amount: decimal
-  shipping_street: varchar
-  shipping_city: varchar
-  shipping_zip: varchar
-  shipping_country: varchar
 ```
 
 #### Products
@@ -111,14 +97,6 @@
   location: varchar
 ```
 
-#### Order_Items
-```
-  order_id: uuid
-  product_id: uuid
-  quantity: integer
-  unit_price: decimal
-```
-
 #### Cart
 ```
   user_id: uuid
@@ -133,6 +111,27 @@
   quantity: integer
 ```
 
+#### Orders
+```
+  id: uuid
+  user_id: uuid
+  status: varchar
+  total_amount: decimal
+  shipping_street: varchar
+  shipping_city: varchar
+  shipping_zip: varchar
+  shipping_country: varchar
+  order_items: []Order_Items
+```
+
+#### Order_Items
+```
+  order_id: uuid
+  product_id: uuid
+  quantity: integer
+  unit_price: decimal
+```
+
 #### Notifications
 ```
   id: uuid
@@ -141,7 +140,6 @@
   message: text
   is_read: bool
 ```
-
 
 ## API Usage
 
@@ -404,7 +402,7 @@
   }
   ```
 
-#### Other Status Codes
+#### Status Codes
 - 200 OK
 - 201 Created
 - 400 Bad Request
