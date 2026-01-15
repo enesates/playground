@@ -10,7 +10,7 @@ func FetchNotification(nid string) (*db.Notification, error) {
 		ID: nid,
 	}
 
-	if err := db.GormDB.First(&notification).Error; err != nil {
+	if err := db.GormDB.Preload("User").First(&notification).Error; err != nil {
 		return nil, err
 	}
 
@@ -21,6 +21,7 @@ func FetchNotifications(uid string) ([]db.Notification, error) {
 	notifications := []db.Notification{}
 
 	if err := db.GormDB.
+		Preload("User").
 		Where("user_id = ?", uid).
 		Find(&notifications).Error; err != nil {
 		return nil, err

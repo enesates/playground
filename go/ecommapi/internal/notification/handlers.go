@@ -35,6 +35,7 @@ func GetNotifications(c *gin.Context) {
 
 	for _, n := range notifications {
 		nItems = append(nItems, gin.H{
+			"id":       n.ID,
 			"username": n.User.Username,
 			"title":    n.Title,
 			"message":  n.Message,
@@ -74,6 +75,7 @@ func MakeNotificationRead(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"notification": gin.H{
+			"id":       notification.ID,
 			"username": notification.User.Username,
 			"title":    notification.Title,
 			"message":  notification.Message,
