@@ -1,5 +1,41 @@
 definitions:
-  models.ProductDTO:
+  cart.CartItemDTO:
+    properties:
+      product_id:
+        type: string
+      quantity:
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  inventory.StockDTO:
+    properties:
+      increment_by:
+        type: integer
+      reason:
+        type: string
+    required:
+    - increment_by
+    type: object
+  order.OrderDTO:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/cart.CartItemDTO'
+        type: array
+      shipping_city:
+        type: string
+      shipping_country:
+        type: string
+      shipping_street:
+        type: string
+      shipping_zip:
+        type: string
+    required:
+    - items
+    type: object
+  product.ProductDTO:
     properties:
       category_id:
         type: string
@@ -14,7 +50,7 @@ definitions:
     - name
     - price
     type: object
-  models.UserLoginDTO:
+  user.UserLoginDTO:
     properties:
       email:
         type: string
@@ -24,7 +60,7 @@ definitions:
     - email
     - password
     type: object
-  models.UserRegisterDTO:
+  user.UserRegisterDTO:
     properties:
       email:
         type: string
@@ -51,7 +87,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/models.UserLoginDTO'
+          $ref: '#/definitions/user.UserLoginDTO'
       produces:
       - application/json
       responses:
@@ -96,7 +132,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/models.UserRegisterDTO'
+          $ref: '#/definitions/user.UserRegisterDTO'
       produces:
       - application/json
       responses:
@@ -108,6 +144,54 @@ paths:
       summary: Create a User
       tags:
       - user
+  /cart:
+    get:
+      description: Get cart items for customer
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cart Items
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get cart for customer
+      tags:
+      - cart
+  /cart/items:
+    post:
+      consumes:
+      - application/json
+      description: Add product to the cart
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: New Cart Item
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/cart.CartItemDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cart items
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add to cart
+      tags:
+      - cart
   /health:
     get:
       description: Check if service runs properly
@@ -122,6 +206,140 @@ paths:
       summary: Health Check
       tags:
       - health
+  /inventory/:product_id:
+    get:
+      description: Get inventory details of a product
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Inventory details
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get product inventory
+      tags:
+      - inventory
+    post:
+      consumes:
+      - application/json
+      description: Increase product inventory
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: Stock Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/inventory.StockDTO'
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Inventory details
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update inventory
+      tags:
+      - inventory
+  /notifications:
+    get:
+      consumes:
+      - application/json
+      description: Get notifications of a user
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notifications
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get notifications
+      tags:
+      - notification
+  /notifications/:id/read:
+    post:
+      consumes:
+      - application/json
+      description: Update notification read status true
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: Notification ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notification data
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update notification status
+      tags:
+      - notification
+  /orders:
+    post:
+      consumes:
+      - application/json
+      description: Create order from the cart
+      parameters:
+      - description: Session token
+        in: header
+        name: X-Session-Token
+        required: true
+        type: string
+      - description: New Order Item
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/order.OrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order items
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create order
+      tags:
+      - order
   /products:
     get:
       description: Get products for a given category starting from a page
@@ -157,7 +375,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/models.ProductDTO'
+          $ref: '#/definitions/product.ProductDTO'
       produces:
       - application/json
       responses:

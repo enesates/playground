@@ -53,7 +53,7 @@
   - Adding the token upon logging in
   - Removing the token upon logging out
   - Middleware to check admin status
-- A notification is created for: Register, Login, Logout, Create product, Update stock and Shopping cart update.
+- Notifications are created for: Register, Login, Logout, Create product, Update stock and Shopping cart update.
 - No JSONB
 - Product Catalogs
   - Pagination (10 products per page)

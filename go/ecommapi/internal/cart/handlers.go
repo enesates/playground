@@ -1,8 +1,10 @@
 package cart
 
 import (
+	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/user"
+	"ecommapi/internal/notification"
+	"fmt"
 
 	"net/http"
 
@@ -19,13 +21,14 @@ import (
 // @Router /cart [get]
 func GetCart(c *gin.Context) {
 	token := c.GetHeader("X-Session-Token")
-	user, err := user.GetUserByToken(token)
+	session, err := auth.GetSessionByToken(token)
+
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	cart, err := FetchCart(user.ID)
+	cart, err := FetchCart(session.User.ID)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusNotFound, err.Error())
 		return
@@ -62,13 +65,13 @@ func AddToCart(c *gin.Context) {
 	}
 
 	token := c.GetHeader("X-Session-Token")
-	user, err := user.GetUserByToken(token)
+	session, err := auth.GetSessionByToken(token)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	cart, err := GetOrCreateCart(user.ID)
+	cart, err := GetOrCreateCart(session.User.ID)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
@@ -76,6 +79,11 @@ func AddToCart(c *gin.Context) {
 
 	cartItem, err := CreateOrUpdateCartItem(cart.ID, cartItemDTO.ProductID, cartItemDTO.Quantity)
 	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := notification.CreateNotificationForEvent(session.User.Username, "Cart Update", fmt.Sprintf("Product %s added to the cart", cartItem.ProductID)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

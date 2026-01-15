@@ -1,7 +1,10 @@
 package inventory
 
 import (
+	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
+	"ecommapi/internal/notification"
+	"fmt"
 
 	"net/http"
 
@@ -14,6 +17,7 @@ import (
 // @Tags inventory
 // @Produce json
 // @Param X-Session-Token header string true "Session token"
+// @Param product_id path string true "Product ID"
 // @Success 200 {object} map[string]any "Inventory details"
 // @Router /inventory/:product_id [get]
 func GetInventory(c *gin.Context) {
@@ -40,8 +44,9 @@ func GetInventory(c *gin.Context) {
 // @Produce json
 // @Param X-Session-Token header string true "Session token"
 // @Param data body StockDTO true "Stock Data"
+// @Param product_id path string true "Product ID"
 // @Success 200 {object} map[string]any "Inventory details"
-// @Router /inventory/:product_id [post]
+// @Router /inventory/:product_id [patch]
 func CreateOrUpdateInventory(c *gin.Context) {
 	var stockDTO StockDTO
 	var err error
@@ -65,6 +70,18 @@ func CreateOrUpdateInventory(c *gin.Context) {
 	}
 
 	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	token := c.GetHeader("X-Session-Token")
+	session, err := auth.GetSessionByToken(token)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := notification.CreateNotificationForEvent(session.User.Username, "Inventory Update", fmt.Sprintf("Stock is increased by %d for %s", stockDTO.IncerementBy, pid)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

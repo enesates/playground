@@ -1,9 +1,10 @@
 package order
 
 import (
+	"ecommapi/internal/auth"
 	"ecommapi/internal/cart"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/user"
+	"ecommapi/internal/notification"
 
 	"net/http"
 
@@ -34,24 +35,38 @@ func PlaceOrder(c *gin.Context) {
 	}
 
 	token := c.GetHeader("X-Session-Token")
-	userObj, err := user.GetUserByToken(token)
+	session, err := auth.GetSessionByToken(token)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	order, err := CreateOrder(orderDTO, userObj.ID)
+	order, err := CreateOrder(orderDTO, session.User.ID)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := cart.DeleteCartByUserID(userObj.ID); err != nil {
+	if err := cart.DeleteCartByUserID(session.User.ID); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	if err := UpdateProductInventories(orderDTO.Items); err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := notification.CreateNotificationForEvent(session.User.Username, "Cart Update", "Cart is removed after order is placed"); err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := notification.CreateNotificationForEvent(session.User.Username, "Inventory Update", "Stocks are updated after order is placed"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

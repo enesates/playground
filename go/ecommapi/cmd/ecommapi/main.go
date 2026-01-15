@@ -6,6 +6,8 @@ import (
 	"ecommapi/internal/cart"
 	db "ecommapi/internal/helpers/database"
 	"ecommapi/internal/inventory"
+	"ecommapi/internal/notification"
+	"ecommapi/internal/order"
 	"ecommapi/internal/product"
 	"ecommapi/internal/user"
 
@@ -40,8 +42,8 @@ func main() {
 
 	router.POST("/orders", api.CheckIsCustomer(), order.PlaceOrder)
 
-	// router.GET("/notifications", api.CheckIsCustomer(), notification.GetNotifications)
-	// router.PATCH("/notifications/:id/read", api.CheckIsCustomer(), notification.UpdateNotification)
+	router.GET("/notifications", api.CheckIsCustomer(), notification.GetNotifications)
+	router.PATCH("/notifications/:id/read", api.CheckIsCustomer(), notification.MakeNotificationRead)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

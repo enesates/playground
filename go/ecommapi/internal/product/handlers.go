@@ -1,10 +1,13 @@
 package product
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
+	"ecommapi/internal/notification"
 
 	"github.com/gin-gonic/gin"
 )
@@ -71,6 +74,18 @@ func AddProduct(c *gin.Context) {
 
 	product, err := CreateProduct(productDTO)
 	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	token := c.GetHeader("X-Session-Token")
+	session, err := auth.GetSessionByToken(token)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := notification.CreateNotificationForEvent(session.User.Username, "Product", fmt.Sprintf("Product created: %s", product.ID)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

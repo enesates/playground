@@ -5,7 +5,6 @@ import (
 
 	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,9 +54,13 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 		return
 	}
 
-	user, err := user.GetUserByToken(token)
+	session, err := auth.GetSessionByToken(token)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	if err != nil || user.Role != role {
+	if err != nil || session.User.Role != role {
 		utils.AbortJSON(c, http.StatusForbidden, "Authorization failed")
 		return
 	}
