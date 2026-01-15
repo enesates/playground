@@ -34,7 +34,7 @@ func GetCart(c *gin.Context) {
 		return
 	}
 
-	items, totalAmount, err := GenerateProductLineItems(cart, nil)
+	items, totalAmount, err := GenerateProductLineItems(cart)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
@@ -83,12 +83,18 @@ func AddToCart(c *gin.Context) {
 		return
 	}
 
-	if err := notif.CreateEventNotif(session.User.ID, "Cart Update", fmt.Sprintf("Product %s added to the cart", cartItem.ProductID)); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Cart Update", fmt.Sprintf("Product %s added to the cart", cartItem.Product.Name)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	items, totalAmount, err := GenerateProductLineItems(cart, cartItem)
+	cart, err = FetchCart(session.User.ID)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	items, totalAmount, err := GenerateProductLineItems(cart)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return

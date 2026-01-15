@@ -85,7 +85,7 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	if err := notif.CreateEventNotif(session.User.ID, "Product", fmt.Sprintf("Product created: %s", product.ID)); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Product", fmt.Sprintf("Product created: %s", product.Name)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
