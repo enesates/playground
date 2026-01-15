@@ -94,6 +94,11 @@ func TestAddProduct(t *testing.T) {
 			expectedStatus:        http.StatusCreated,
 		},
 		{
+			name:           "invalid request",
+			requestBody:    `{ invalid request }`,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
 			name:              "create product fails",
 			mockCreateProduct: func(_ ProductDTO) (*db.Product, error) { return nil, errors.New("error") },
 			requestBody:       `{"name":"pname","price":12,"description":"desc","category_id":"cid"}`,

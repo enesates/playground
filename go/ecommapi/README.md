@@ -59,7 +59,7 @@
 - Notifications are created for: Register, Login, Logout, Create product, Update stock and Shopping cart update.
 - No JSONB
 - Product Catalogs: Pagination (10 products per page)
-- Test case for each endpoint with more than 90% code coverage
+- Test case for each endpoint
 - Documentation using Swagger UI (swaggo)
 
 
