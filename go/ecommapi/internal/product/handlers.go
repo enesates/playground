@@ -12,6 +12,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	fetchProducts = FetchProducts
+
+	createProduct     = CreateProduct
+	getSessionByToken = auth.GetSessionByToken
+	createEventNotif  = notif.CreateEventNotif
+)
+
 // GetProducts godoc
 // @Summary Get products for category
 // @Description Get products for a given category starting from a page
@@ -32,7 +40,7 @@ func GetProducts(c *gin.Context) {
 		return
 	}
 
-	products, err := FetchProducts(cid, page)
+	products, err := fetchProducts(cid, page)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
@@ -72,20 +80,20 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	product, err := CreateProduct(productDTO)
+	product, err := createProduct(productDTO)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	token := c.GetHeader("X-Session-Token")
-	session, err := auth.GetSessionByToken(token)
+	session, err := getSessionByToken(token)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := notif.CreateEventNotif(session.User.ID, "Product", fmt.Sprintf("Product created: %s", product.Name)); err != nil {
+	if err := createEventNotif(session.User.ID, "Product", fmt.Sprintf("Product created: %s", product.Name)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

@@ -13,6 +13,12 @@ var (
 	checkUserExists  = CheckUserExists
 	createUser       = CreateUser
 	createEventNotif = notif.CreateEventNotif
+
+	getUserAndSession = GetUserAndSession
+
+	getSessionByToken = auth.GetSessionByToken
+	getUserByID       = GetUserByID
+	deleteSession     = auth.DeleteSession
 )
 
 // Register godoc
@@ -72,13 +78,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user, session, err := GetUserAndSession(userDTO)
+	user, session, err := getUserAndSession(userDTO)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := notif.CreateEventNotif(user.ID, "Login", "User logged in"); err != nil {
+	if err := createEventNotif(user.ID, "Login", "User logged in"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -104,26 +110,26 @@ func Login(c *gin.Context) {
 // @Router /auth/logout [post]
 func Logout(c *gin.Context) {
 	token := c.GetHeader("X-Session-Token")
-	session, err := auth.GetSessionByToken(token)
+	session, err := getSessionByToken(token)
 
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	user, err := GetUserByID(session.UserID)
+	user, err := getUserByID(session.UserID)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	err = auth.DeleteSession(*session)
+	err = deleteSession(*session)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := notif.CreateEventNotif(user.ID, "Logout", "User logged out"); err != nil {
+	if err := createEventNotif(user.ID, "Logout", "User logged out"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

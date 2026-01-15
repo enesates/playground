@@ -60,7 +60,7 @@ func CheckAuthorizationForRole(c *gin.Context, role string) {
 		return
 	}
 
-	if err != nil || session.User.Role != role {
+	if session.User.Role != role {
 		utils.AbortJSON(c, http.StatusForbidden, "Authorization failed")
 		return
 	}
