@@ -40,10 +40,6 @@ func PlaceOrder(c *gin.Context) {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if err != nil {
-		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
-		return
-	}
 
 	order, err := CreateOrder(orderDTO, session.User.ID)
 	if err != nil {
@@ -71,8 +67,19 @@ func PlaceOrder(c *gin.Context) {
 		return
 	}
 
+	order, err = FetchOrder(order.ID)
+	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	items, totalAmount, err := GenerateOrderLineItems(order)
 	if err != nil {
+		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := UpdateOrderTotal(order.ID, totalAmount); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

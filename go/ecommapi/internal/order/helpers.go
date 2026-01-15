@@ -4,7 +4,7 @@ import (
 	"ecommapi/internal/cart"
 	db "ecommapi/internal/helpers/database"
 	"ecommapi/internal/inventory"
-	"ecommapi/internal/product"
+	"math"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -15,13 +15,7 @@ func GenerateOrderLineItems(order *db.Order) ([]gin.H, float64, error) {
 	totalAmount := 0.0
 
 	for _, oi := range order.OrderItems {
-		product, err := product.GetProductByID(oi.ProductID)
-
-		if err != nil {
-			return nil, 0.0, err
-		}
-
-		totalAmount += product.Price
+		totalAmount += math.Round((float64(oi.Quantity)*oi.UnitPrice)*100) / 100
 
 		oItems = append(oItems, gin.H{
 			"product_id": oi.ProductID,

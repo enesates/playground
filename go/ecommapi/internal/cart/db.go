@@ -83,11 +83,7 @@ func CreateOrUpdateCartItem(cid string, pid string, quantity int) (*db.CartItem,
 }
 
 func DeleteCartByUserID(uid string) error {
-	cart := db.Cart{
-		UserID: uid,
-	}
-
-	if err := db.GormDB.Delete(&cart).Error; err != nil {
+	if err := db.GormDB.Unscoped().Where("user_id = ?", uid).Delete(&db.Cart{}).Error; err != nil {
 		return err
 	}
 

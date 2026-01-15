@@ -4,6 +4,8 @@ import (
 	db "ecommapi/internal/helpers/database"
 	"ecommapi/internal/helpers/utils"
 	"ecommapi/internal/product"
+
+	"gorm.io/gorm"
 )
 
 func CreateOrder(orderDTO OrderDTO, uid string) (*db.Order, error) {
@@ -43,4 +45,29 @@ func CreateOrder(orderDTO OrderDTO, uid string) (*db.Order, error) {
 	}
 
 	return &order, nil
+}
+
+func FetchOrder(uid string) (*db.Order, error) {
+	order := db.Order{}
+
+	if err := db.GormDB.
+		Preload("OrderItems").
+		Where("id = ?", uid).
+		First(&order).Error; err != nil {
+		return nil, err
+	}
+
+	return &order, nil
+}
+
+func UpdateOrderTotal(oid string, price float64) error {
+	if err := db.GormDB.
+		Model(&db.Order{}).
+		Where("id = ?", oid).
+		UpdateColumn("total_amount", gorm.Expr("total_amount + ?", price)).
+		Error; err != nil {
+		return err
+	}
+
+	return nil
 }

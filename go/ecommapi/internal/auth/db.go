@@ -30,7 +30,7 @@ func GetSessionByUserID(userID string) (*db.Session, error) {
 }
 
 func DeleteSession(session db.Session) error {
-	deleteResult := db.GormDB.Delete(&session)
+	deleteResult := db.GormDB.Unscoped().Where("id = ?", session.ID).Delete(&session)
 
 	return deleteResult.Error
 }
