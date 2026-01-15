@@ -9,6 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	checkUserExists  = CheckUserExists
+	createUser       = CreateUser
+	createEventNotif = notif.CreateEventNotif
+)
+
 // Register godoc
 // @Summary Create a User
 // @Description Creating a new Customer
@@ -26,18 +32,18 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if CheckUserExists(userDTO.Username, userDTO.Email) {
+	if checkUserExists(userDTO.Username, userDTO.Email) {
 		utils.AbortJSON(c, http.StatusBadRequest, "User already exists")
 		return
 	}
 
-	user, err := CreateUser(userDTO)
+	user, err := createUser(userDTO)
 	if err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := notif.CreateEventNotif(user.ID, "Register", "User registered"); err != nil {
+	if err := createEventNotif(user.ID, "Register", "User registered"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

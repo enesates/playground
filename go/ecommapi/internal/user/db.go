@@ -63,12 +63,3 @@ func GetUserByID(userID string) (*db.User, error) {
 
 	return &user, nil
 }
-
-// func GetUserByToken(token string) (*db.User, error) {
-// 	session, err := auth.GetSessionByToken(token)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return GetUserByID(session.UserID)
-// }

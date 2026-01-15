@@ -29,9 +29,13 @@
   go run ./cmd/ecommapi
   ```
 
-5. (Optional) Run the tests in `tests` folder:
+5. (Optional) Run the tests:
   ```sh
-  go test . -v
+  go test ./... -v
+  go test ./... -cover 
+  go test ./... -coverprofile=coverage.out
+  go tool cover -func=coverage.out
+  go tool cover -html=coverage.out
   ```
 
 6. (Optional) Generate updated docs:
@@ -44,7 +48,7 @@
 
 ## Functionalities
 - Authentication: Stateful Sessions (token-based with database validation)
-- Header check: HTTP header X-Session-Token for non-public requests
+- Header check: HTTP header X-Session-Token for non-ublic requests
 - Password hashing with bcrypt
   - https://pkg.go.dev/golang.org/x/crypto/bcrypt
   - https://pkg.go.dev/github.com/absagar/go-bcrypt#section-readme
