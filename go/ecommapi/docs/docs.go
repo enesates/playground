@@ -247,7 +247,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "post": {
+            "patch": {
                 "description": "Increase product inventory",
                 "consumes": [
                     "application/json"
@@ -329,7 +329,7 @@ const docTemplate = `{
             }
         },
         "/notifications/:id/read": {
-            "post": {
+            "patch": {
                 "description": "Update notification read status true",
                 "consumes": [
                     "application/json"

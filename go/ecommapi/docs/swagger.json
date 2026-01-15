@@ -236,7 +236,7 @@
                     }
                 }
             },
-            "post": {
+            "patch": {
                 "description": "Increase product inventory",
                 "consumes": [
                     "application/json"
@@ -318,7 +318,7 @@
             }
         },
         "/notifications/:id/read": {
-            "post": {
+            "patch": {
                 "description": "Update notification read status true",
                 "consumes": [
                     "application/json"

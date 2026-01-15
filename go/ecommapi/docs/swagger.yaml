@@ -231,7 +231,7 @@ paths:
       summary: Get product inventory
       tags:
       - inventory
-    post:
+    patch:
       consumes:
       - application/json
       description: Increase product inventory
@@ -286,7 +286,7 @@ paths:
       tags:
       - notification
   /notifications/:id/read:
-    post:
+    patch:
       consumes:
       - application/json
       description: Update notification read status true
