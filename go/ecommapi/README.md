@@ -147,6 +147,8 @@
 
 ## API Usage
 
+![](./swagger.png)
+
 #### POST /auth/register
 - **Request Body:**
   ```json
