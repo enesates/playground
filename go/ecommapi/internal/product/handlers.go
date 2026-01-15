@@ -7,7 +7,7 @@ import (
 
 	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/notification"
+	notif "ecommapi/internal/notification"
 
 	"github.com/gin-gonic/gin"
 )
@@ -85,7 +85,7 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(session.User.Username, "Product", fmt.Sprintf("Product created: %s", product.ID)); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Product", fmt.Sprintf("Product created: %s", product.ID)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

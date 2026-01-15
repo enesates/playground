@@ -11,6 +11,7 @@ func FetchCart(uid string) (*db.Cart, error) {
 	cart := db.Cart{}
 
 	if err := db.GormDB.
+		Preload("CartItem").
 		Where("user_id = ?", uid).
 		First(&cart).Error; err != nil {
 		return nil, err

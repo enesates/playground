@@ -3,7 +3,7 @@ package inventory
 import (
 	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/notification"
+	notif "ecommapi/internal/notification"
 	"fmt"
 
 	"net/http"
@@ -81,7 +81,7 @@ func CreateOrUpdateInventory(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(session.User.Username, "Inventory Update", fmt.Sprintf("Stock is increased by %d for %s", stockDTO.IncerementBy, pid)); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Inventory Update", fmt.Sprintf("Stock is increased by %d for %s", stockDTO.IncerementBy, pid)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

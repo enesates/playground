@@ -12,7 +12,7 @@ func GetSessionByToken(token string) (*db.Session, error) {
 		Token: token,
 	}
 
-	if err := db.GormDB.Where("token = ?", token).First(&session).Error; err != nil {
+	if err := db.GormDB.Preload("User").Where("token = ?", token).First(&session).Error; err != nil {
 		return nil, err
 	}
 

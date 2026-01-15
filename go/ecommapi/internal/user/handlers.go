@@ -3,7 +3,7 @@ package user
 import (
 	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/notification"
+	notif "ecommapi/internal/notification"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +37,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(user.Username, "Register", "New user registered"); err != nil {
+	if err := notif.CreateEventNotif(user.ID, "Register", "User registered"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -72,7 +72,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(user.Username, "Login", "User logged in"); err != nil {
+	if err := notif.CreateEventNotif(user.ID, "Login", "User logged in"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -117,7 +117,7 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(user.Username, "Logout", "User logged out"); err != nil {
+	if err := notif.CreateEventNotif(user.ID, "Logout", "User logged out"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

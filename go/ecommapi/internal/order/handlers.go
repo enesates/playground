@@ -4,7 +4,7 @@ import (
 	"ecommapi/internal/auth"
 	"ecommapi/internal/cart"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/notification"
+	notif "ecommapi/internal/notification"
 
 	"net/http"
 
@@ -61,12 +61,12 @@ func PlaceOrder(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(session.User.Username, "Cart Update", "Cart is removed after order is placed"); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Cart Update", "Cart is removed after order is placed"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(session.User.Username, "Inventory Update", "Stocks are updated after order is placed"); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Inventory Update", "Stocks are updated after order is placed"); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

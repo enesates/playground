@@ -1,4 +1,4 @@
-package notification
+package notif
 
 import (
 	db "ecommapi/internal/helpers/database"

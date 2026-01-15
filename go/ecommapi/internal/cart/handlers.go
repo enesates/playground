@@ -3,7 +3,7 @@ package cart
 import (
 	"ecommapi/internal/auth"
 	"ecommapi/internal/helpers/utils"
-	"ecommapi/internal/notification"
+	notif "ecommapi/internal/notification"
 	"fmt"
 
 	"net/http"
@@ -83,7 +83,7 @@ func AddToCart(c *gin.Context) {
 		return
 	}
 
-	if err := notification.CreateNotificationForEvent(session.User.Username, "Cart Update", fmt.Sprintf("Product %s added to the cart", cartItem.ProductID)); err != nil {
+	if err := notif.CreateEventNotif(session.User.ID, "Cart Update", fmt.Sprintf("Product %s added to the cart", cartItem.ProductID)); err != nil {
 		utils.AbortJSON(c, http.StatusInternalServerError, err.Error())
 		return
 	}

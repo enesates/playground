@@ -1,6 +1,6 @@
-package notification
+package notif
 
-func CreateNotificationForEvent(uid string, title string, msg string) error {
+func CreateEventNotif(uid string, title string, msg string) error {
 	_, err := CreateNotification(uid, title, msg)
 	return err
 }
