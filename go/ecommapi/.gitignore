@@ -33,4 +33,4 @@ go.work.sum
 .DS_Store
 
 __debug_*
-*db.csv
+db*.csv
