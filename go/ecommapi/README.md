@@ -31,8 +31,7 @@
 
 5. (Optional) Run the tests:
   ```sh
-  go test ./... -v
-  go test ./... -cover 
+  go test ./... -v -cover
   go test ./... -coverprofile=coverage.out
   go tool cover -func=coverage.out
   go tool cover -html=coverage.out

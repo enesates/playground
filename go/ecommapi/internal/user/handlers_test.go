@@ -38,9 +38,9 @@ func TestRegister(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		mockCheckUser  func(username, email string) bool
-		mockCreateUser func(dto UserRegisterDTO) (*db.User, error)
-		mockNotif      func(uid, title, msg string) error
+		mockCheckUser  func(_, _ string) bool
+		mockCreateUser func(_ UserRegisterDTO) (*db.User, error)
+		mockNotif      func(_, _, _ string) error
 		requestBody    string
 		expectedStatus int
 	}{
@@ -166,6 +166,7 @@ func TestLogout(t *testing.T) {
 		mockGetUserByID       func(_ string) (*db.User, error)
 		mockDeleteSession     func(_ db.Session) error
 		mockNotif             func(_, _, _ string) error
+		requestBody           string
 		expectedStatus        int
 	}{
 		{
@@ -223,7 +224,7 @@ func TestLogout(t *testing.T) {
 				defer func() { createEventNotif = notif.CreateEventNotif }()
 			}
 
-			w := performRequest(router, http.MethodPost, "/auth/logout", "")
+			w := performRequest(router, http.MethodPost, "/auth/logout", tt.requestBody)
 			assert.Equal(t, tt.expectedStatus, w.Code)
 		})
 	}
