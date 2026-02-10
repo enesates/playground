@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Hide Disturbing Elements",
+  "version": "1.0",
+  "description": "Hides disturbing html elements on live player",
+  "content_scripts": [
+    {
+      "matches": ["https://www.example.com/*"],
+      "css": ["content.css"],
+      "all_frames": true
+    }
+  ]
+}

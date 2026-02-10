@@ -1,0 +1,9 @@
+#video__wrapper button.vjs-play-control {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.similar-contents-container {
+  display: none !important;
+  visibility: hidden !important;
+}
